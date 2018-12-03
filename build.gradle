@@ -1,0 +1,16 @@
+plugins {
+  id "org.jetbrains.kotlin.platform.native" version "1.3.10"
+}
+
+repositories {
+  jcenter()
+}
+
+components.main {
+  entryPoint = "main.main"
+  targets = ["linux_x64"]
+  outputKinds = [EXECUTABLE]
+  dependencies {
+    cinterop("sdl")
+  }
+}

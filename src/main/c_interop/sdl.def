@@ -1,0 +1,5 @@
+headers = SDL.h
+headerFilter = SDL*
+compilerOpts = -I/usr/include/SDL2 -D_REENTRANT
+linkerOpts = -L/usr/lib/x86_64-linux-gnu -lSDL2
+package = sdl
