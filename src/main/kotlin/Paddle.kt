@@ -7,9 +7,8 @@ import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.pointed
 import kotlinx.cinterop.ptr
 
-public class Paddle(parent: CPointer<SDL_Surface>, x: Int, y: Int) : IDrawable(100, 10, x, y) {
+public class Paddle(val parent: CPointer<SDL_Surface>, x: Int, y: Int) : IDrawable(100, 10, x, y) {
   val color = Color(parent.pointed.format!!).BLUE
-  val parent = parent
   override fun draw() {
     SDL_FillRect(parent, rect.ptr, color)
   }

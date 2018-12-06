@@ -7,9 +7,8 @@ import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.pointed
 import kotlinx.cinterop.ptr
 
-public class Ball(parent: CPointer<SDL_Surface>, x: Int, y: Int) : IDrawable(5, 5, x, y) {
+public class Ball(val parent: CPointer<SDL_Surface>, x: Int, y: Int) : IDrawable(5, 5, x, y) {
   val color = Color(parent.pointed.format!!).GREEN
-  val parent = parent
   var deltaX = 1
   var deltaY = 1
   var _moving = false

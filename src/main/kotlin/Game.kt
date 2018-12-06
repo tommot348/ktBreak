@@ -13,11 +13,10 @@ typealias Edge = List<Point>
 fun Edge.getIntersection(other: Edge): Point {
 }
 
-class Game(surface: CPointer<SDL_Surface>, val width: Int, val height: Int) {
+class Game(val surface: CPointer<SDL_Surface>, val width: Int, val height: Int) {
   val bricks = mutableListOf<Brick>()
   val paddle = Paddle(surface, 350, 500)
   val ball = Ball(surface, 355, 495)
-  val surface = surface
   val backgroundColor = Color(surface.pointed.format!!).WHITE
   init {
     (0..5).forEach { y ->
