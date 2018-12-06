@@ -13,7 +13,13 @@ public class Paddle(parent: CPointer<SDL_Surface>, x: Int, y: Int) : IDrawable(1
   override fun draw() {
     SDL_FillRect(parent, rect.ptr, color)
   }
-  fun moveX(delta: Int) {
+  fun moveX(delta: Int, width: Int) {
     rect.x += delta
+    if (rect.x + 100 >= width) {
+      rect.x = width - 100
+    }
+    if (rect.x <= 0) {
+      rect.x = 0
+    }
   }
 }

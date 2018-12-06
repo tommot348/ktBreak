@@ -19,6 +19,7 @@ import sdl.SDL_Quit
 import sdl.SDLK_ESCAPE
 import sdl.SDLK_LEFT
 import sdl.SDLK_RIGHT
+import sdl.SDLK_UP
 
 import kotlinx.cinterop.Arena
 import kotlinx.cinterop.alloc
@@ -26,22 +27,26 @@ import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.staticCFunction
 
+var update = true
 fun cb(interval: UInt, param: COpaquePointer?): UInt {
+  update = true
   return interval
 }
 fun main(args: Array<String>) {
+  val width = 800
+  val height = 600
   val arena = Arena()
   SDL_Init(SDL_INIT_VIDEO)
   arena.defer { SDL_Quit() }
   val win = SDL_CreateWindow("test",
     SDL_WINDOWPOS_CENTERED.toInt(),
     SDL_WINDOWPOS_CENTERED.toInt(),
-    800,
-    600,
+    width,
+    height,
     0)
   arena.defer { SDL_DestroyWindow(win) }
   val surface = SDL_GetWindowSurface(win)
-  val game = Game(surface!!)
+  val game = Game(surface!!, width, height)
   var run = true
   val event = arena.alloc<SDL_Event>()
   val timer = SDL_AddTimer(100 / 6, staticCFunction(::cb), null)
@@ -58,6 +63,7 @@ fun main(args: Array<String>) {
         SDLK_RIGHT.toInt() -> if (mode == Mode.Stop) {
           mode = Mode.Right
         }
+        SDLK_UP.toInt() -> game.startBall()
       }
       SDL_KEYUP -> when (event.key.keysym.sym) {
         SDLK_LEFT.toInt() -> if (mode == Mode.Left) {
@@ -69,7 +75,10 @@ fun main(args: Array<String>) {
       }
     }
     game.draw()
-    game.update(mode)
+    if (update) {
+      update = false
+      game.update(mode)
+    }
     SDL_UpdateWindowSurface(win)
   }
 }
