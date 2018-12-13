@@ -24,7 +24,7 @@ public class Ball(val parent: CPointer<SDL_Surface>, x: Int, y: Int) : IDrawable
     SDL_FillRect(parent, rect.ptr, color)
   }
   fun getRectPtr() = rect.ptr
-  fun getVector() = listOf<Int>(deltaX, deltaY)
+  fun getVector(): Edge = listOf<Point>(listOf<Int>(rect.x, rect.y), listOf<Int>(rect.x + deltaX, rect.y + deltaY))
   fun move(width: Int, height: Int) {
     rect.x += deltaX
     rect.y += deltaY

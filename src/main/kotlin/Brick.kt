@@ -16,12 +16,12 @@ public class Brick(val parent: CPointer<SDL_Surface>, x: Int, y: Int) : IDrawabl
   fun getEdges(): List<Edge> {
     val a = listOf<Int>(rect.x, rect.y)
     val b = listOf<Int>(rect.x + 40, rect.y)
-    val c = listOf<Int>(rect.x, rect.y + 10)
-    val d = listOf<Int>(rect.x + 40, rect.y + 10)
-    val ab = listOf<Point>(a, b)
-    val bc = listOf<Point>(b, c)
-    val cd = listOf<Point>(c, d)
-    val da = listOf<Point>(d, a)
-    return listOf<Edge>(ab, bc, cd, da)
+    val c = listOf<Int>(rect.x + 40, rect.y + 10)
+    val d = listOf<Int>(rect.x, rect.y + 10)
+    val top = listOf<Point>(a, b)
+    val right = listOf<Point>(b, c)
+    val bottom = listOf<Point>(c, d)
+    val left = listOf<Point>(d, a)
+    return listOf<Edge>(top, right, bottom, lefleft)
   }
 }
