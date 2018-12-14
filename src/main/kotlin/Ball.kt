@@ -23,7 +23,6 @@ public class Ball(val parent: CPointer<SDL_Surface>, x: Int, y: Int) : IDrawable
   override fun draw() {
     SDL_FillRect(parent, rect.ptr, color)
   }
-  fun getRectPtr() = rect.ptr
   fun getVector(): Edge = listOf<Point>(listOf<Int>(rect.x, rect.y), listOf<Int>(rect.x + deltaX, rect.y + deltaY))
   fun move(width: Int, height: Int) {
     rect.x += deltaX
@@ -45,6 +44,10 @@ public class Ball(val parent: CPointer<SDL_Surface>, x: Int, y: Int) : IDrawable
       deltaY *= -1
     }
   }
+  public val position: Point
+    get() {
+      return listOf<Int>(rect.x, rect.y)
+    }
   fun start() {
     _moving = true
   }

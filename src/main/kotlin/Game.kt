@@ -1,16 +1,17 @@
 package main
 
+import kotlin.math.sqrt
+
 import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.pointed
 
-import sdl.SDL_HasIntersection
 import sdl.SDL_FillRect
 import sdl.SDL_Surface
 
 typealias Point = List<Int>
 typealias Edge = List<Point>
 
-fun Edge.contains(p: Point) {
+fun Edge.containsPoint(p: Point): Boolean {
   return false
 }
 
@@ -35,13 +36,19 @@ fun Edge.intersect(other: Edge): Point? {
   val xinters: Float = (xDivident.toFloat() / divisor)
   val yDivident = ((y1 - y2) * ((x4 * y3) - (x3 * y4)) - (y3 - y4) * ((x2 * y1) - (x1 * y2)))
   val yinters: Float = (yDivident.toFloat() / divisor)
-  val inters = listOf<Int>(xinters.toInt(), yinters.toInt()) as Point
+  val inters = listOf<Int>(xinters.toInt(), yinters.toInt())
   // ist punkt auf beiden strecken?
-  if (this.contains(inters) and other.contains(inters)) {
+  if (this.containsPoint(inters) and other.containsPoint(inters)) {
     return inters
   } else {
     return null
   }
+}
+
+fun Point.distanceTo(other: Point): Int {
+  val x = this[0] - other[0]
+  val y = this[1] - other[1]
+  return sqrt((x*x + y*y).toDouble()).toInt()
 }
 
 class Game(val surface: CPointer<SDL_Surface>, val width: Int, val height: Int) {
@@ -63,28 +70,61 @@ class Game(val surface: CPointer<SDL_Surface>, val width: Int, val height: Int) 
     ball.draw()
   }
   fun update(mode: Mode) {
-    val ballPtr = ball.getRectPtr()
     when (mode) {
       Mode.Left -> paddle.moveX(-1, width)
       Mode.Right -> paddle.moveX(1, width)
-      else -> null
+      else -> paddle.moveX(0, width)
     }
     if (ball.moving) {
       ball.move(width, height)
     }
-    val hit = bricks.map {
+    val hit = bricks.mapIndexed { i, it ->
       val edges = it.getEdges()
       val ballvec = ball.getVector()
       val interstop = edges[0].intersect(ballvec)
       val intersright = edges[1].intersect(ballvec)
       val intersbottom = edges[2].intersect(ballvec)
       val intersleft = edges[3].intersect(ballvec)
-      when (listOf<Point>(interstop, intersright, intersbottom, intersleft)) {
-
+      val dists = listOf<Point?>(interstop, intersright, intersbottom, intersleft).map {
+        it?.distanceTo(ball.position)
+      }
+      if (dists.filterNotNull().size == 0) {
+        null
+      } else {
+        val shortestIndex = dists.reduceIndexed { i, acc, x ->
+          if (x != null) {
+            if (acc == null) {
+              i
+            } else {
+              if (x < dists[acc]!!) {
+                i
+              } else {
+                acc
+              }
+            }
+          } else {
+            acc
+          }
+        }
+        when (shortestIndex) {
+          0 -> "top"
+          1 -> "right"
+          2 -> "bottom"
+          3 -> "left"
+          else -> ""
+        }
       }
     }
-    if (hit.size > 0) {
-
+    hit.forEachIndexed { i, it ->
+      if (it != null) {
+        bricks.removeAt(i)
+        when (it) {
+          "top" -> ball.changeDirY()
+          "bottom" -> ball.changeDirY()
+          "left" -> ball.changeDirY()
+          "right" -> ball.changeDirY()
+        }
+      }
     }
   }
   fun startBall() {

@@ -22,6 +22,6 @@ public class Brick(val parent: CPointer<SDL_Surface>, x: Int, y: Int) : IDrawabl
     val right = listOf<Point>(b, c)
     val bottom = listOf<Point>(c, d)
     val left = listOf<Point>(d, a)
-    return listOf<Edge>(top, right, bottom, lefleft)
+    return listOf<Edge>(top, right, bottom, left)
   }
 }
